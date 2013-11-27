@@ -115,11 +115,13 @@ class Smarty_Resource_Hybrid extends Smarty_Resource {
    */
   public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template=null)
   {
-    $this->databaseResource->populate($source, $_template);
-    if ( !$source->exists ) {
-      $source->type = 'file';
-      return $this->fileResource->populate($source, $_template);
+    if ( !@$_REQUEST['disable_template_override'] ) {
+      $this->databaseResource->populate($source, $_template);
+      if( $source->exists )
+        return;
     }
+    $source->type = 'file';
+    return $this->fileResource->populate($source, $_template);
   }
 
   /**
